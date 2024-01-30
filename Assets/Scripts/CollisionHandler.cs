@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CollisionHandler : MonoBehaviour
 {
@@ -8,16 +9,43 @@ public class CollisionHandler : MonoBehaviour
         {
             case "Friendly":
                 Debug.Log("You are a friendly person!");
+
                 break;
             case "Finish":
                 Debug.Log("You WIN!");
+                LoadNextScene();
+
                 break;
             case "Fuel":
                 Debug.Log("Refuel");
+
                 break;
             default:
-                Debug.Log("We under attack!");
+                ReloadScene();
                 break;
+        }
+    }
+
+    private void ReloadScene()
+    {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex);
+    }
+
+    private void LoadNextScene()
+    {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currentSceneIndex + 1;
+
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            Debug.Log("You WIN the Level!!!");
+            SceneManager.LoadScene(nextSceneIndex);
+        }
+        else
+        {
+            Debug.Log("You just SAVE the Human race!!!");
+            SceneManager.LoadScene(0);
         }
     }
 }
