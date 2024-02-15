@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Movement : MonoBehaviour
@@ -7,8 +5,13 @@ public class Movement : MonoBehaviour
     private Rigidbody rb;
     private AudioSource audioSource;
 
+    [SerializeField] private ParticleSystem thrustPS;
+    [SerializeField] private ParticleSystem leftBoosterPS;
+    [SerializeField] private ParticleSystem rightBoosterPS;
+
     [SerializeField] private float rocketThrust = 1000f;
     [SerializeField] private float rotationThrust = 10f;
+    [SerializeField] private AudioClip mainEngine;
 
     // Start is called before the first frame update
     void Start()
@@ -28,15 +31,21 @@ public class Movement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Space))
         {
+            if (!thrustPS.isPlaying)
+            {
+                Debug.Log("Is palying PS");
+                thrustPS.Play();
+            }
             rb.AddRelativeForce(Vector3.up * rocketThrust * Time.deltaTime);
             if (!audioSource.isPlaying)
             {
-                audioSource.Play();
+                audioSource.PlayOneShot(mainEngine);
             }
         }
         else
         {
             audioSource.Stop();
+            thrustPS.Stop();
         }
     }
 
@@ -45,10 +54,12 @@ public class Movement : MonoBehaviour
         if (Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D))
         {
             ApplyRotation(rotationThrust);
+            leftBoosterPS.Play();
         }
         else if (Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.A))
         {
             ApplyRotation(-rotationThrust);
+            rightBoosterPS.Play();
         }
     }
 

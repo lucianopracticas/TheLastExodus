@@ -5,9 +5,25 @@ public class CollisionHandler : MonoBehaviour
 {
     private float levelLoadDelay = 1f;
     private float restartLevelDelay = 1.5f;
+    
+    private AudioSource audioSource;
+    [SerializeField] private AudioClip obstacleColision;
+    [SerializeField] private AudioClip finishSound;
+
+    [SerializeField] private ParticleSystem obstacleColisionPSys;
+    [SerializeField] private ParticleSystem finishPSys;
+
+    private bool isTransitioning = false;
+
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (isTransitioning) return;
+        
         switch (collision.gameObject.tag)
         {
             case "Friendly":
@@ -24,6 +40,7 @@ public class CollisionHandler : MonoBehaviour
 
                 break;
             default:
+                Debug.Log("You CRUSH!");
                 StartCrushSequence();
 
                 break;
@@ -32,15 +49,26 @@ public class CollisionHandler : MonoBehaviour
 
     private void StartLoadNextSequence()
     {
+        isTransitioning = true;
+        audioSource.Stop();
+
+        // SFX upon crash and particle effect upon next level
+        finishPSys.Play();
+        audioSource.PlayOneShot(finishSound);
+
         GetComponent<Movement>().enabled = false;
         Invoke("LoadNextScene", levelLoadDelay);
     }
 
     private void StartCrushSequence()
     {
-        // TODO add SFX upon crash
-        // TODO add particle effect upon crush
+        isTransitioning = true;
+        audioSource.Stop();
 
+        // SFX upon crash and particle effect upon crush
+        obstacleColisionPSys.Play();
+        audioSource.PlayOneShot(obstacleColision);
+        
         GetComponent<Movement>().enabled = false;
         Invoke("ReloadScene", restartLevelDelay);
     }

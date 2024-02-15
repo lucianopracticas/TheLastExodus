@@ -3,7 +3,9 @@ guid: 10eeb8cf45d945640a4603272d406b35
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - obstacleColision: {instanceID: 0}
+  - finishSound: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
